@@ -250,5 +250,4 @@ Use free domain from Freenom (.tk, .ml, .ga)
 
 Use self-signed certificate for testing
 
-<img width="1362" height="651" alt="Instance " src="https://github.com/user-attachments/assets/d108c94f-bb45-4014-8817-bcb35f98ec7d" />
 
