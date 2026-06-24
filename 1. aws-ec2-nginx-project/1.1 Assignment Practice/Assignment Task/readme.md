@@ -34,7 +34,7 @@ Store in:
 
 /etc/nginx/ssl/
 
-🔹 Part 3: Nginx Config (30 Marks)
+🔹 Part 3: Nginx Config 
 
 Create custom config
 
