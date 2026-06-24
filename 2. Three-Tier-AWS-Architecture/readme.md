@@ -1,4 +1,4 @@
-📄 1. README.md (Main Documentation)
+
 markdown
 # 3-Tier AWS Architecture Implementation
 
