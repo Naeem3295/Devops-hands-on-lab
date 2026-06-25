@@ -188,23 +188,6 @@ Restart Nginx
       │
       ▼
 Website Updated
-```
-
----
-
-# 📸 Screenshots
-
-Include the following screenshots:
-
-- AWS EC2 Instances
-- GitHub Repository
-- GitHub Actions Success
-- Self Hosted Runner
-- Workflow Logs
-- React Application
-- Automatic Deployment
-
----
 
 # ✅ Features
 
