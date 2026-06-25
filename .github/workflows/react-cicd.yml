@@ -1,37 +1,15 @@
-name: React CI/CD Pipeline
+- name: Deploy to Web Server
+  run: |
+    rm -rf /tmp/react-build
+    mkdir -p /tmp/react-build
 
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - '3. aws-react-cicd-pipeline/**'
+    cp -r dist/* /tmp/react-build/
 
-jobs:
-  build-and-deploy:
-    runs-on: self-hosted
+    scp -r /tmp/react-build/* ubuntu@10.0.2.143:/tmp/
 
-    defaults:
-      run:
-        working-directory: "3. aws-react-cicd-pipeline"
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build React App
-        run: npm run build
-
-      - name: Deploy to Nginx
-        run: |
-          sudo rm -rf /var/www/html/*
-          sudo cp -r dist/* /var/www/html/
-          sudo systemctl reload nginx
+    ssh ubuntu@10.0.2.143 << 'EOF'
+      sudo rm -rf /var/www/html/*
+      sudo cp -r /tmp/* /var/www/html/
+      sudo chown -R www-data:www-data /var/www/html
+      sudo systemctl restart nginx
+    EOF
