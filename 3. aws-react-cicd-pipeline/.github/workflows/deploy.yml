@@ -1,0 +1,30 @@
+name: React CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build React App
+        run: npm run build
+
+      - name: Deploy to Nginx
+        run: |
+          sudo rm -rf ${{ secrets.TARGET_DIR }}/*
+          sudo cp -r dist/* ${{ secrets.TARGET_DIR }}/
