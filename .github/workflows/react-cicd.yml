@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - '3. aws-react-cicd-pipeline/**'
 
 jobs:
   build-and-deploy:
@@ -37,9 +35,10 @@ jobs:
 
           cp -r dist/* /tmp/react-build/
 
-          scp -o StrictHostKeyChecking=no -r /tmp/react-build/* ubuntu@10.0.2.143:/tmp/
+          scp -o StrictHostKeyChecking=no -r /tmp/react-build/* ubuntu@10.0.2.143:/tmp/react-build/
 
           ssh -o StrictHostKeyChecking=no ubuntu@10.0.2.143 << 'EOF'
+            sudo mkdir -p /var/www/html
             sudo rm -rf /var/www/html/*
             sudo cp -r /tmp/react-build/* /var/www/html/
             sudo chown -R www-data:www-data /var/www/html
