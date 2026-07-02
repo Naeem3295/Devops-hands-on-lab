@@ -36,3 +36,60 @@ Services provide a stable network endpoint for accessing Pods. Since Pod IP addr
 4. Difference between ConfigMaps and Secrets with a practical example.
 
 ConfigMaps are used to store non-sensitive configuration data such as application mode or log level. Secrets are used to store sensitive information like passwords, API keys, or tokens. For example, APP_MODE=dev can be stored in a ConfigMap, while a database password should be stored in a Secret.
+
+# Part 2: Cluster Setup & Verification
+
+The objective of this part was to set up a Kubernetes cluster and verify that all core Kubernetes components were running successfully before deploying any application.
+
+## Cluster Setup
+
+A lightweight Kubernetes distribution (**K3s**) was installed on an AWS EC2 Ubuntu instance.
+
+### Commands Used
+
+bash
+curl -sfL https://get.k3s.io | sh -
+
+## Verify Cluster Status
+
+### Check Kubernetes Nodes
+
+bash
+sudo kubectl get nodes
+
+
+**Output**
+
+NAME         STATUS   ROLES           AGE   VERSION
+k8s-master   Ready    control-plane   xxm   v1.36.2+k3s1
+
+### Check Cluster Information
+
+bash
+sudo kubectl cluster-info
+
+**Output**
+
+- Kubernetes Control Plane
+- CoreDNS
+- Metrics Server
+
+
+
+### Check System Pods
+
+bash
+sudo kubectl get pods -n kube-system
+
+**Output**
+
+coredns
+metrics-server
+local-path-provisioner
+traefik
+svclb-traefik
+
+## Observation
+
+The K3s cluster was successfully installed on the AWS EC2 instance. The control-plane node was in the **Ready** state, indicating that the cluster was healthy and operational. All essential system Pods, including **CoreDNS**, **Metrics Server**, **Traefik**, and **Local Path Provisioner**, were running successfully in the `kube-system` namespace, confirming that the Kubernetes environment was ready for application deployment.
+
