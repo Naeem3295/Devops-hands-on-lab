@@ -269,8 +269,209 @@ sudo kubectl exec -it <pod-name> -- printenv | grep PASSWORD
 Output
 
 USERNAME=admin
+
 PASSWORD=password123
 
 ## Observation
 
 The ConfigMap and Secret were successfully created and injected into the Deployment as environment variables. The values were verified inside the running container using the `kubectl exec` command. This approach separates configuration and sensitive information from the application image, making deployments more secure and easier to manage.
+
+
+# Part 5: Scaling & Rolling Updates
+
+
+The objective of this part was to learn how Kubernetes scales applications and performs rolling updates without downtime. This included increasing the number of replicas, updating the application image, monitoring the rollout process, and rolling back to the previous version.
+
+## Scaling the Deployment
+
+Initially, the Deployment was running with **2 replicas**. It was scaled to **4 replicas** using the following command:
+
+bash
+sudo kubectl scale deployment nginx-deployment --replicas=4
+
+Verify the scaling result:
+
+bash
+sudo kubectl get pods
+
+
+The Deployment successfully created four running Pods.
+
+## Rolling Update
+
+The Nginx image was updated from **nginx:1.27** to **nginx:1.28**.
+
+Update Image
+
+bash
+sudo kubectl set image deployment/nginx-deployment nginx=nginx:1.28
+
+Monitor Rollout
+
+bash
+sudo kubectl rollout status deployment/nginx-deployment
+
+Verify Image
+
+bash
+sudo kubectl describe deployment nginx-deployment | grep Image
+
+
+The Deployment completed the rolling update successfully without downtime.
+
+## Rollback
+
+After verifying the updated version, the Deployment was rolled back to the previous version.
+
+Rollback Command
+
+bash
+sudo kubectl rollout undo deployment/nginx-deployment
+
+Verify Rollback
+
+bash
+sudo kubectl rollout status deployment/nginx-deployment
+
+bash
+sudo kubectl describe deployment nginx-deployment | grep Image
+
+
+The image version was restored from **nginx:1.28** back to **nginx:1.27** successfully.
+
+## Observation
+
+The Deployment was successfully scaled from **2** to **4** replicas. Kubernetes automatically created additional Pods to match the desired state. During the rolling update, Kubernetes replaced the old Pods with new Pods one by one without causing downtime. Finally, the rollback restored the Deployment to the previous stable image version.
+
+# Part 6: Basic Troubleshooting
+
+The objective of this part was to understand how to identify and resolve common deployment issues in Kubernetes by intentionally introducing an error and troubleshooting it using Kubernetes diagnostic commands.
+
+
+## Break the Deployment
+
+The Deployment was intentionally configured with an invalid image name.
+
+```bash
+sudo kubectl set image deployment/nginx-deployment nginx=nginx:wrongversion
+
+
+## Observe Pod Status
+
+The Pod status was checked using:
+
+```bash
+sudo kubectl get pods
+```
+
+The Pods entered the **ImagePullBackOff** / **ErrImagePull** state because Kubernetes was unable to pull the specified container image.
+
+## Investigate the Problem
+
+### Describe Pod
+
+```bash
+sudo kubectl describe pod <pod-name>
+```
+
+The Events section displayed an error indicating that Kubernetes failed to pull the container image.
+
+### Check Logs
+
+```bash
+sudo kubectl logs <pod-name>
+```
+
+Since the container could not start, Kubernetes returned an error indicating that the container was waiting for the image to be downloaded.
+
+## Fix the Issue
+
+The Deployment image was corrected by specifying the valid Nginx image.
+
+bash
+sudo kubectl set image deployment/nginx-deployment nginx=nginx:1.27
+
+Verify Rollout
+
+bash
+sudo kubectl rollout status deployment/nginx-deployment
+
+
+Verify Running Pods
+
+bash
+sudo kubectl get pods
+
+
+All Pods returned to the **Running** state successfully.
+
+
+## Observation
+
+The Deployment failed because an invalid container image name was specified. Kubernetes attempted to pull the image but could not find it, causing the Pods to enter the **ImagePullBackOff** state. Using the `kubectl describe pod` command, the image pull error was identified. After correcting the image version, Kubernetes successfully recreated the Pods, and the application returned to a healthy state.
+
+
+# Part 6: Basic Troubleshooting
+
+The objective of this part was to understand how to identify and resolve common deployment issues in Kubernetes by intentionally introducing an error and troubleshooting it using Kubernetes diagnostic commands.
+
+
+## Break the Deployment
+
+The Deployment was intentionally configured with an invalid image name.
+
+```bash
+sudo kubectl set image deployment/nginx-deployment nginx=nginx:wrongversion
+
+## Observe Pod Status
+
+The Pod status was checked using:
+
+```bash
+sudo kubectl get pods
+
+The Pods entered the **ImagePullBackOff** / **ErrImagePull** state because Kubernetes was unable to pull the specified container image.
+
+## Investigate the Problem
+
+### Describe Pod
+
+```bash
+sudo kubectl describe pod <pod-name>
+```
+
+The Events section displayed an error indicating that Kubernetes failed to pull the container image.
+
+### Check Logs
+
+bash
+sudo kubectl logs <pod-name>
+
+
+Since the container could not start, Kubernetes returned an error indicating that the container was waiting for the image to be downloaded.
+
+## Fix the Issue
+
+The Deployment image was corrected by specifying the valid Nginx image.
+
+```bash
+sudo kubectl set image deployment/nginx-deployment nginx=nginx:1.27
+```
+
+Verify Rollout
+
+```bash
+sudo kubectl rollout status deployment/nginx-deployment
+```
+
+Verify Running Pods
+
+```bash
+sudo kubectl get pods
+```
+
+All Pods returned to the **Running** state successfully.
+
+## Observation
+
+The Deployment failed because an invalid container image name was specified. Kubernetes attempted to pull the image but could not find it, causing the Pods to enter the **ImagePullBackOff** state. Using the `kubectl describe pod` command, the image pull error was identified. After correcting the image version, Kubernetes successfully recreated the Pods, and the application returned to a healthy state.
