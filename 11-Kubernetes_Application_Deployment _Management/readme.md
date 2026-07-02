@@ -93,3 +93,184 @@ svclb-traefik
 
 The K3s cluster was successfully installed on the AWS EC2 instance. The control-plane node was in the **Ready** state, indicating that the cluster was healthy and operational. All essential system Pods, including **CoreDNS**, **Metrics Server**, **Traefik**, and **Local Path Provisioner**, were running successfully in the `kube-system` namespace, confirming that the Kubernetes environment was ready for application deployment.
 
+# Part 3: Multi-Resource Deployment
+
+The objective of this part was to deploy a containerized Nginx application in Kubernetes using multiple resources. A Deployment was created with two replicas, and a NodePort Service was configured to expose the application externally.
+
+## Resources Created
+
+The following Kubernetes resources were created:
+
+- Deployment
+- Service (NodePort)
+
+## Deployment Configuration
+
+The Deployment was configured with:
+
+- Application: Nginx
+- Replicas: 2
+- Container Port: 80
+- Labels: `app: nginx`
+
+The Deployment ensures that two identical Nginx Pods are always running inside the cluster.
+
+## Service Configuration
+
+A NodePort Service was created to expose the application outside the Kubernetes cluster.
+
+Configuration:
+
+- Service Type: NodePort
+- Service Port: 80
+- Target Port: 80
+- NodePort: 30080
+
+This allows users to access the application through the EC2 public IP and NodePort.
+
+## Deployment Commands
+
+### Apply Deployment
+
+bash
+sudo kubectl apply -f deployment.yaml
+
+### Apply Service
+
+bash
+sudo kubectl apply -f service.yaml
+
+## Verification
+
+### Verify Deployment
+
+bash
+sudo kubectl get deployment
+
+
+### Verify Running Pods
+
+bash
+sudo kubectl get pods
+
+
+### Verify Service
+
+bash
+sudo kubectl get svc
+
+
+## Access the Application
+
+The application was successfully accessed from a web browser using the EC2 Public IP and the configured NodePort.
+
+Example:
+
+http://54.169.244.120:30080/
+
+The default **Welcome to nginx!** page was displayed successfully.
+
+
+## Observation
+
+The Deployment successfully created two running Nginx Pods, and the NodePort Service exposed the application to external users. Kubernetes automatically associated the Pods with the Service using labels and selectors. The application was successfully accessed through the EC2 public IP without any issues.
+
+
+# Part 4: Configuration & Secrets
+
+The objective of this part was to manage application configuration and sensitive information using Kubernetes ConfigMaps and Secrets. These resources were injected into the running Nginx container as environment variables without modifying the application image.
+
+## Resources Created
+
+The following Kubernetes resources were created:
+
+- ConfigMap
+- Secret
+
+## ConfigMap
+
+A ConfigMap was created to store non-sensitive application configuration.
+
+Configuration:
+
+| Key | Value |
+|------|-------|
+| APP_MODE | dev |
+
+### Apply ConfigMap
+
+bash
+sudo kubectl apply -f configmap.yaml
+
+Verify ConfigMap
+
+bash
+sudo kubectl get configmap
+
+## Secret
+
+A Secret was created to store dummy application credentials.
+
+Configuration:
+
+| Key | Value |
+|------|-------|
+| USERNAME | admin |
+| PASSWORD | password123 |
+
+The Secret values were stored in Base64 encoded format.
+
+### Apply Secret
+
+bash
+sudo kubectl apply -f secret.yaml
+
+Verify Secret
+
+bash
+sudo kubectl get secrets
+
+## Update Deployment
+
+The Deployment was updated to inject both ConfigMap and Secret values as environment variables into the Nginx container.
+
+Environment Variables:
+
+| Variable | Source |
+|-----------|--------|
+| APP_MODE | ConfigMap |
+| USERNAME | Secret |
+| PASSWORD | Secret |
+
+Apply the updated Deployment
+
+bash
+sudo kubectl apply -f deployment.yaml
+
+## Verification
+
+The environment variables were verified inside the running Pod using the `kubectl exec` command.
+
+Verify ConfigMap Variable
+
+bash
+sudo kubectl exec -it <pod-name> -- printenv | grep APP_MODE
+
+Output
+
+APP_MODE=dev
+
+Verify Secret Variables
+
+bash
+sudo kubectl exec -it <pod-name> -- printenv | grep USERNAME
+sudo kubectl exec -it <pod-name> -- printenv | grep PASSWORD
+
+Output
+
+USERNAME=admin
+PASSWORD=password123
+
+## Observation
+
+The ConfigMap and Secret were successfully created and injected into the Deployment as environment variables. The values were verified inside the running container using the `kubectl exec` command. This approach separates configuration and sensitive information from the application image, making deployments more secure and easier to manage.
