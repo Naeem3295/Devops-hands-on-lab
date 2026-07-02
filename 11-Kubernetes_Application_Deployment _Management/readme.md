@@ -445,7 +445,7 @@ The Events section displayed an error indicating that Kubernetes failed to pull 
 ### Check Logs
 
 bash
-sudo kubectl logs <pod-name>
+sudo kubectl logs nginx-deployment-df474794d-2664x
 
 
 Since the container could not start, Kubernetes returned an error indicating that the container was waiting for the image to be downloaded.
