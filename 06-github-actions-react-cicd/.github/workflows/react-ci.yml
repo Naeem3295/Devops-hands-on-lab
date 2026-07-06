@@ -17,7 +17,6 @@ jobs:
       run:
         working-directory: 06-github-actions-react-cicd
 
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -38,8 +37,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: react-build
-          path: dist
-
-          defaults:
-  run:
-    working-directory: 06-github-actions-react-cicd
+          path: 06-github-actions-react-cicd/dist
