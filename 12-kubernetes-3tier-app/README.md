@@ -2,7 +2,7 @@ Kubernetes 3-Tier BMI Health Tracker
 
 A production-style **3-Tier BMI Health Tracker** deployed on **AWS EC2** using **Docker** and **K3s Kubernetes**.
 
-This project demonstrates how to deploy a containerized application using Kubernetes with a React frontend, Node.js backend, PostgreSQL database, Persistent Volumes, ConfigMaps, Secrets, StatefulSets, and Kubernetes Services.
+Successfully migrated a Docker-based Three-Tier BMI Health Tracker application to Kubernetes (K3s) on AWS EC2, implementing StatefulSets, Persistent Volumes, ConfigMaps, Secrets, Kubernetes Jobs for database migration, ClusterIP/NodePort Services, and production-style deployment with end-to-end validation.
 
 
 ## 📌 Project Overview
