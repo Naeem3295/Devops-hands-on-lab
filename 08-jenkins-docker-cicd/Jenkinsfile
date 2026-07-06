@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'echo Build Started'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'echo Docker Build Started'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'echo Deploy Started'
+            }
+        }
+    }
+}
