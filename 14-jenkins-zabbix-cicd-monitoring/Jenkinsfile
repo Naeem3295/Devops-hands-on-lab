@@ -1,0 +1,28 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Build') {
+            steps {
+                sh 'echo "Build Stage Completed"'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'chmod +x test.sh'
+                sh './test.sh'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'docker build -t jenkins-demo .'
+                sh 'docker rm -f jenkins-demo || true'
+                sh 'docker run -d --name jenkins-demo -p 3000:3000 jenkins-demo'
+            }
+        }
+
+    }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "jenkins-zabbix-cicd-monitoring",
+  "version": "1.0.0",
+  "description": "Jenkins CI/CD Pipeline Demo",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "bash test.sh"
+  },
+  "author": "Md Naeem",
+  "license": "MIT"
+}
