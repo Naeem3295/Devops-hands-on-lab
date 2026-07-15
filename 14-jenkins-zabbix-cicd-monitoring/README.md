@@ -115,14 +115,9 @@ Configured monitoring includes:
 
 ---
 
-Report
+#  Report
 
 Jenkins CI/CD Pipeline and Zabbix Monitoring Report
-Name
-
-Md Naeem
-
-Project Title
 
 Automating Application Deployment using Jenkins and Monitoring System Health using Zabbix
 
